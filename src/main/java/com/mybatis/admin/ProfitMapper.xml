@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ProfitDao">
+    <!-- 查询每月利润 -->
+    <select id="selectMonthProfit" resultType="MonthProfit">
+		SELECT YEAR(orderdate) YEAR,MONTH(orderdate) MONTH,SUM(amount) amount
+		FROM orderbasetable WHERE STATUS=1 GROUP BY YEAR(orderdate),MONTH(orderdate)
+	</select>
+    <!-- 查询各类型销售利润 -->
+    <select id="selectTypeProfit" resultType="TypeProfit">
+		SELECT goodstype.typename,SUM(goodstable.grprice) amount FROM orderbasetable
+		LEFT JOIN orderdetail ON orderbasetable.id = orderdetail.orderbasetable_id
+		LEFT JOIN goodstable ON goodstable.id = orderdetail.goodstable_id
+		LEFT JOIN goodstype ON goodstype.id = goodstable.goodstype_id
+		WHERE STATUS=1
+		GROUP BY goodstable.goodstype_id
+	</select>
+</mapper>
